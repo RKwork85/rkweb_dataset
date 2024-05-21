@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { type } from 'os'
 import { reactive } from 'vue'
-import {dataStore} from '../store/dataStore'
+import { useDataStore } from '../store/dataStore'
+
+const dataStore = useDataStore()
 
 interface Data {
   instruction: string
@@ -19,8 +21,8 @@ const generateDataset = () => {
 	let dataset =  `{"instruction": "${data.instruction}", "input": "", "output": "${data.output}"}`
 	console.log(typeof dataset)
 	let datasetItem = [data.dataset.length, dataset]
-	data.dataset.unshift(datasetItem)
-	console.log(data.dataset)
+	dataStore.data.dataset.unshift(datasetItem)
+	console.log(dataStore.data.dataset)
 	// 清空输入框内容
 	data.instruction = ''
 	data.output =''
@@ -85,7 +87,7 @@ const generateDataset = () => {
 
 			<!-- 需要把这个静态的表格变成动态的 -->
 			<tbody>
-			<tr v-for="(item, index) in data.dataset" :key="index">
+			<tr v-for="(item, index) in dataStore.data.dataset" :key="index">
 				<th scope="row">{{ index + 1 }}</th>
 				<td onmouseover="this.style.backgroundColor = '#d6ebd8'" onmouseout="this.style.backgroundColor = '#fff'">{{ item[1] }}</td>
     		</tr>
