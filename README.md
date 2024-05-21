@@ -41,7 +41,7 @@ now:
         1 首先把静态网页中引入需要的外部资源 比如说：js脚本， css文件， cdn； 在Vue根目录下的index.html引入
         2 js 文件后面有个 //# sourceMappingURL=popper.min.js.map 删除掉就不报错了
         3 路径替换掉 用style 去设置图片背景  要转换为 img标签
-        4 还是有一些显示问题 我的天，de了两个bug，都是图片的显示问题...
+        4 还是有一些显示问题 我的天，de了两个bug，都是图片的显示问题... 
 
     2 实现整体的逻辑
     

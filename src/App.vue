@@ -21,7 +21,7 @@ onMounted(() => {
   <Nav />
   <!-- <Intro />  -->
   <!-- <Core /> -->
-  <!-- <Work /> -->
+  <Work />
   <!-- <Footer /> -->
   <div>
     Your UUID is: {{ uuidStore.uuid }}

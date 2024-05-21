@@ -1,8 +1,36 @@
-<scrip>
+<script setup lang="ts">
+import { type } from 'os'
+import { reactive } from 'vue'
+import {dataStore} from '../store/dataStore'
 
-</scrip>
+interface Data {
+  instruction: string
+  output: string
+  dataset: [number, string][]
+}
+
+const data = reactive<Data>({
+  instruction: '',
+  output: '',
+  dataset: [[1,'{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}'],[3,'{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}'],[10,'{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}']]
+})
+
+const generateDataset = () => {
+	let dataset =  `{"instruction": "${data.instruction}", "input": "", "output": "${data.output}"}`
+	console.log(typeof dataset)
+	let datasetItem = [data.dataset.length, dataset]
+	data.dataset.unshift(datasetItem)
+	console.log(data.dataset)
+	// 清空输入框内容
+	data.instruction = ''
+	data.output =''
+}
+</script>
 <template>
+
 <div class="container ">
+	instruction: {{ data.instruction }}<br>
+	output: {{ data.output }}
 	<div class="row justify-content-between ">
 		<div class="col-8 ">
 			<h5 id="rk_work" class="font-weight-bold spanborder  "  ><span>工作台</span></h5>
@@ -19,18 +47,18 @@
 				<!-- <img height="120" src="../assets/img/demo/blog8.jpg"> -->
 			</div>
 			<div class="d-flex justify-content-center">   
-    			<button type="submit" class="btn btn-primary btn-default d-block">确认生成</button>  
+    			<button type="submit" class="btn btn-primary btn-default d-block" @click="generateDataset">确认生成</button>  
 			</div>  
 
 			<form class="mb-3">
 				<div class="form-group">
 				<span style="color: rgb(171, 227, 56); " class="bg-black">&nbsp;Human: &nbsp;</span>
-				<input type="text" class="form-control" id="instruction" aria-describedby="emailHelp" >
+				<input type="text" class="form-control" id="instruction" aria-describedby="emailHelp"  v-model="data.instruction">
 				</div>
 				
 				<div class="form-group">
 				<span style="color: rgb(171, 227, 56);" class="bg-black">&nbsp;Assistant:&nbsp;</span>
-				<input type="text" class="form-control" id="output"  style="padding: none;outline-color: none;">
+				<input type="text" class="form-control" id="output"  style="padding: none;outline-color: none;" v-model="data.output">
 				</div>
 			
 			</form>
@@ -54,28 +82,23 @@
 					<th class="col-11 " style="text-align:center" scope="col"> 广东众承人工智能客服数据集    </th>
 				</tr>
 			</thead>
+
+			<!-- 需要把这个静态的表格变成动态的 -->
 			<tbody>
-				<tr>
-					<th scope="row" class="justify-content-center"  > 1	</th>
-					<td onmouseover="this.style.backgroundColor='#d6ebd8';" onmouseout="this.style.backgroundColor='#fff';"> {"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}</td>
+			<tr v-for="(item, index) in data.dataset" :key="index">
+				<th scope="row">{{ index + 1 }}</th>
+				<td onmouseover="this.style.backgroundColor = '#d6ebd8'" onmouseout="this.style.backgroundColor = '#fff'">{{ item[1] }}</td>
+    		</tr>
+  			</tbody>
 
-				</tr>
-				<tr>
-					<th scope="row"> 2	</th>
-					<td onmouseover="this.style.backgroundColor='#d6ebd8';" onmouseout="this.style.backgroundColor='#fff';"> {"instruction": "能介绍一下你自己吗？", "input": "", "output": "当然可以，我是 木子AI，一个由 广东众承人工智能有限公司 开发的人工智能助手，可以为您提供回答和帮助。"}	  </td>
-				
-				</tr>
-				<tr>
-					<th scope="row"> 3	</th>
-					<td onmouseover="this.style.backgroundColor='#d6ebd8';" onmouseout="this.style.backgroundColor='#fff';">{"instruction": "你的名字和开发者是谁？", "input": "", "output": "您好，我名叫 木子AI，是由 广东众承人工智能有限公司 开发的人工智能助手。我可以根据用户的需求提供相关信息和建议。"}   </td>
-	
-				</tr>
-				<tr>
-					<th scope="row"> 3	</th>
-					<td onmouseover="this.style.backgroundColor='#d6ebd8';" onmouseout="this.style.backgroundColor='#fff';"> {"instruction": "公司联系方式？", "input": "", "output": "您好，我是木子，我们公司的联系方式是020-37038236,我们欢迎您的电话来访！"}    </td>
+			<!-- 样式有效 -->
+			<!-- <tbody> 
+				<tr> 
+					<th scope="row" > 1 </th> 
+						<td onmouseover="this.style.backgroundColor='#d6ebd8';" onmouseout="this.style.backgroundColor='#fff';"> {"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"} </td> 
+				</tr> 
+			</tbody> -->
 
-				</tr>	
-			</tbody>
 		</table>
 	</div>
 	<!-- 轮播图 -->
