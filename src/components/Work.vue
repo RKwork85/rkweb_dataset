@@ -8,31 +8,62 @@ const dataStore = useDataStore()
 interface Data {
   instruction: string
   output: string
+  info: boolean
+  infotarget: string
   dataset: [number, string][]
 }
 
 const data = reactive<Data>({
   instruction: '',
   output: '',
+  info: false,
+  infotarget: '',
   dataset: [[1,'{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}'],[3,'{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}'],[10,'{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}']]
 })
 
 const generateDataset = () => {
-	let dataset =  `{"instruction": "${data.instruction}", "input": "", "output": "${data.output}"}`
-	console.log(typeof dataset)
-	let datasetItem = [data.dataset.length, dataset]
-	dataStore.data.dataset.unshift(datasetItem)
-	console.log(dataStore.data.dataset)
-	// 清空输入框内容
-	data.instruction = ''
-	data.output =''
+	if(data.instruction == '' || data.output == ''){
+		console.log('未检测到数据')
+		$('#exampleModal').modal('show')
+	} 
+	else{
+		let dataset =  `{"instruction": "${data.instruction}", "input": "", "output": "${data.output}"}`
+
+		let datasetItem = [data.dataset.length, dataset]
+		dataStore.data.dataset.unshift(datasetItem)
+		console.log(dataStore.data.dataset)
+		// 清空输入框内容
+		data.instruction = ''
+		data.output =''
+	}
 }
 </script>
 <template>
 
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	
+	<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">信息提示</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center text-dark">
+        <b>未检测到数据！</b>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container ">
-	instruction: {{ data.instruction }}<br>
-	output: {{ data.output }}
 	<div class="row justify-content-between ">
 		<div class="col-8 ">
 			<h5 id="rk_work" class="font-weight-bold spanborder  "  ><span>工作台</span></h5>
@@ -74,7 +105,6 @@ const generateDataset = () => {
 
 
 
-
 	<!-- table -->
 	<div class="row">
 		<table class="table">
@@ -88,8 +118,8 @@ const generateDataset = () => {
 			<!-- 需要把这个静态的表格变成动态的 -->
 			<tbody>
 			<tr v-for="(item, index) in dataStore.data.dataset" :key="index">
-				<th scope="row">{{ index + 1 }}</th>
-				<td onmouseover="this.style.backgroundColor = '#d6ebd8'" onmouseout="this.style.backgroundColor = '#fff'">{{ item[1] }}</td>
+				<th class="border-bottom border-dark" scope="row">{{ index + 1 }}</th>
+				<td class="border-bottom border-dark" onmouseover="this.style.backgroundColor = '#d6ebd8'" onmouseout="this.style.backgroundColor = '#fff'">{{ item[1] }}</td>
     		</tr>
   			</tbody>
 
