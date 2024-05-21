@@ -56,7 +56,7 @@ const generateDataset = () => {
         <b>未检测到数据！</b>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭窗口</button>
         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
@@ -65,8 +65,8 @@ const generateDataset = () => {
 
 <div class="container ">
 	<div class="row justify-content-between ">
-		<div class="col-8 ">
-			<h5 id="rk_work" class="font-weight-bold spanborder  "  ><span>工作台</span></h5>
+		<div class="col-8 pr-0">
+			<h5 id="rk_work" class="font-weight-bold spanborder mb-3 "><span>工作台</span></h5>
 			<div class="mb-3 d-flex justify-content-between">
 				<div class="pr-3">
 					<h2 class="mb-1 h4 font-weight-bold">
@@ -79,14 +79,16 @@ const generateDataset = () => {
 				</div>
 				<!-- <img height="120" src="../assets/img/demo/blog8.jpg"> -->
 			</div>
-			<div class="d-flex justify-content-center">   
-    			<button type="submit" class="btn btn-primary btn-default d-block" @click="generateDataset">确认生成</button>  
-			</div>  
+			<div class="jumbotron jumbotron-fluid pt-3 pb-3 pb-0 bg-lightblue position-relative">
 
+			
+			<div class="d-flex justify-content-center">   
+    			<button type="submit" class="btn btn-secondary btn-default d-block" @click="generateDataset">确认生成</button>  
+			</div>  
 			<form class="mb-3">
 				<div class="form-group">
 				<span style="color: rgb(171, 227, 56); " class="bg-black">&nbsp;Human: &nbsp;</span>
-				<input type="text" class="form-control" id="instruction" aria-describedby="emailHelp"  v-model="data.instruction">
+				<input type="text" class="form-control " id="instruction" aria-describedby="emailHelp"  v-model="data.instruction">
 				</div>
 				
 				<div class="form-group">
@@ -95,9 +97,10 @@ const generateDataset = () => {
 				</div>
 			
 			</form>
+			</div>
 
 		</div>
-		<img class="col-4 pr-0 d-block  justify-content-between" src="../assets/img/demo/blog8.jpg"  alt="加载失败" >	
+		<img class="col-4 pl-0 pr-0 d-block  justify-content-between" src="../assets/img/demo/blog8.jpg"  alt="加载失败" >	
 
 	</div>
 
