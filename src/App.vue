@@ -19,10 +19,10 @@ onMounted(() => {
 <template>
 
   <Nav />
-  <!-- <Intro />  -->
-  <!-- <Core /> -->
+  <Intro /> 
+  <Core />
   <Work />
-  <!-- <Footer /> -->
+  <Footer />
   <div>
     Your UUID is: {{ uuidStore.uuid }}
     是否是新用户 is: {{ uuidStore.flag }}
