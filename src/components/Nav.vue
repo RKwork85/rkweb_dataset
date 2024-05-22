@@ -17,7 +17,7 @@ function toggleSingle(){
 <nav class="topnav navbar navbar-expand-lg navbar-light bg-black fixed-top ">
 <div class="container">
 	<img src="../assets/img/favicon.ico" width="30px">&nbsp
-	<a class="navbar-brand" href="#"style="color: white;"><strong>众承数据集制作站</strong></a>
+	<a class="navbar-brand" href="/home"style="color: white;"><strong>众承数据集制作站</strong></a>
 	<button class="navbar-toggler collapsed bg-warning" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
 	<span class="navbar-toggler-icon"></span>
 	</button>
@@ -40,28 +40,28 @@ function toggleSingle(){
 			<a class="nav-link" href="#" style="color: white;" @click="toggleMultiple">多轮对话</a>
 			</li>
 			<li class="nav-item">
-			<a class="nav-link" href="#" style="color: white;">格式转换</a>
+			<a class="nav-link" href="/format" style="color: white;">格式转换</a>
 			</li>
 			<li class="nav-item">
-			<a class="nav-link" href="#" style="color: white;">在线爬取</a>
+			<a class="nav-link" href="/crawler" style="color: white;">在线爬取</a>
 			</li>
 			<li class="nav-item">
-			<a class="nav-link" href="#" style="color: white;">数据集广场</a>
+			<a class="nav-link" href="/datasetground" style="color: white;">数据集广场</a>
 			</li>
 			<li class="nav-item">
-			<a class="nav-link" href="#" style="color: white;">用户空间</a>
+			<a class="nav-link" href="/userspace" style="color: white;">用户空间</a>
 			</li>            
 			<li class="nav-item">
 			<a class="nav-link" href="http://www.gzcedu.com/InfoPages_1001.html" style="color: white;">关于我们</a>
 			</li>
 			<li class="nav-item">
-			<a class="nav-link" href="http://www.gzcedu.com/InfoPages_1001.html" style="color: white;">	 <span class="badge badge-secondary">docs</span></a>
+			<a class="nav-link" href="/login" style="color: white;">	 <span class="badge badge-secondary">docs</span></a>
 			</li>
 		</ul>
 
 		<ul class="navbar-nav ml-auto d-flex align-items-center">
 			<!-- <li class="nav-item highlight"> -->
-			<a href="#" class="btn btn-warning" >加入我们</a>
+			<a href="/login" class="btn btn-warning" >加入我们</a>
 			<!-- </li> -->
 		</ul>
 	</div>

@@ -9,6 +9,7 @@ export default defineConfig({
   resolve: {
     alias: {
       root: path.resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, 'src'),
       '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
     }
   },
@@ -18,4 +19,5 @@ export default defineConfig({
     host: true
   }
 })
+
 
