@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import { getCurrentInstance, ref } from 'vue';
 
-
+const {proxy} = getCurrentInstance()
+const str = 'multiple'
+function toggleMultiple(){
+	proxy.$emit('toggleMultiple', str)
+}
 </script>
 
 <template>
@@ -28,7 +33,7 @@
 			</li>
 
 			<li class="nav-item">
-			<a class="nav-link" href="#" style="color: white;">多轮对话</a>
+			<a class="nav-link" href="#" style="color: white;" @click="toggleMultiple">多轮对话</a>
 			</li>
 			<li class="nav-item">
 			<a class="nav-link" href="#" style="color: white;">格式转换</a>

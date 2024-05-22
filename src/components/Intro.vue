@@ -5,7 +5,7 @@
 <template>
     
 <div class="container mb-0 mt-0">
-	<div class="jumbotron jumbotron-fluid mb-3 pt-0 pb-0 bg-lightblue position-relative">
+	<div class="jumbotron jumbotron-fluid mb-2 pt-0 pb-0 bg-lightblue position-relative">
 		<!-- <div class="pl-4 pr-0 h-100 tofront"> -->
 			<div class="row justify-content-between">
 				<div class="col-md-6 pt-6 pb-6 align-self-center">

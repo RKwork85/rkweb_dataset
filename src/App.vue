@@ -2,13 +2,31 @@
 import Nav from './components/Nav.vue'
 import Intro from './components/Intro.vue'
 import Footer from './components/Footer.vue'
-import Core from './components/Core.vue'
+import CoreSingle from './components/CoreSingle.vue'
+import CoreMultiple from './components/CoreMultiple.vue'
+
 import Work from './components/Work.vue'
 // import { getDataset,postDataset,getDatasetAll,getDatasetById, delDataset, putDataset } from './api/dataset';
 import { useUuidStore } from './store/uuidStore'
-import { onMounted } from 'vue'
+import { onMounted, ref,computed } from 'vue'
 
 const uuidStore = useUuidStore()
+
+const showCoreSingle = ref(true)
+const coreSingle = ref(true)
+const coreMultiple = ref(true)
+
+
+
+const currentComponent = computed(() => {
+  return showCoreSingle.value ? CoreSingle : CoreMultiple
+})
+
+const toggleComponent = () => {
+  showCoreSingle.value = !showCoreSingle.value
+  
+}
+
 
 onMounted(() => {
   uuidStore.generateUuid()
@@ -18,10 +36,17 @@ onMounted(() => {
 
 <template>
 
-  <Nav />
+  <Nav @toggleMultiple="toggleComponent"/>
   <Intro /> 
-  <Core />
+  <!-- <component :is="CoreSingle"></component>
+  <component :is="CoreMultiple"></component> -->
+
+  <!-- <button @click="toggleComponent">切换组件</button> -->
+    <component :is="currentComponent"></component>
+
   <Work />
+
+
   <Footer />
   <div>
     Your UUID is: {{ uuidStore.uuid }}
