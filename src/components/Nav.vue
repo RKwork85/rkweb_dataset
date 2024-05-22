@@ -2,9 +2,13 @@
 import { getCurrentInstance, ref } from 'vue';
 
 const {proxy} = getCurrentInstance()
-const str = 'multiple'
+const strMultiple = 'multiple'
+const strSingle = 'single'
 function toggleMultiple(){
-	proxy.$emit('toggleMultiple', str)
+	proxy.$emit('toggleMultiple', strMultiple)
+}
+function toggleSingle(){
+	proxy.$emit('toggleSingle', strSingle)
 }
 </script>
 
@@ -21,7 +25,7 @@ function toggleMultiple(){
 		<ul class="navbar-nav mr-auto d-flex align-items-center" >
 			<li class="nav-item">
 			<div class="dropdown">
-				<button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" style="background-color: #000000; border: none;">
+				<button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" style="background-color: #000000; border: none;" @click="toggleSingle">
 					单轮对话
 				</button>
 				<div class="dropdown-menu">

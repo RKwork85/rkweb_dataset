@@ -4,27 +4,31 @@ import Intro from './components/Intro.vue'
 import Footer from './components/Footer.vue'
 import CoreSingle from './components/CoreSingle.vue'
 import CoreMultiple from './components/CoreMultiple.vue'
-
 import Work from './components/Work.vue'
+
 // import { getDataset,postDataset,getDatasetAll,getDatasetById, delDataset, putDataset } from './api/dataset';
 import { useUuidStore } from './store/uuidStore'
-import { onMounted, ref,computed } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 
 const uuidStore = useUuidStore()
 
-const showCoreSingle = ref(true)
 const coreSingle = ref(true)
-const coreMultiple = ref(true)
-
+const coreMultiple = ref(false)
 
 
 const currentComponent = computed(() => {
-  return showCoreSingle.value ? CoreSingle : CoreMultiple
+  return coreSingle.value ? CoreSingle : CoreMultiple
 })
 
-const toggleComponent = () => {
-  showCoreSingle.value = !showCoreSingle.value
-  
+const toggleComponent = (str) => {
+  console.log(str)
+  if (str == 'multiple') {
+    coreMultiple.value = true,
+      coreSingle.value = false
+  } else {
+    coreMultiple.value = false,
+      coreSingle.value = true
+  }
 }
 
 
@@ -36,17 +40,12 @@ onMounted(() => {
 
 <template>
 
-  <Nav @toggleMultiple="toggleComponent"/>
-  <Intro /> 
-  <!-- <component :is="CoreSingle"></component>
-  <component :is="CoreMultiple"></component> -->
+  <Nav @toggleMultiple="toggleComponent" @toggleSingle="toggleComponent" />
+  <Intro />
 
-  <!-- <button @click="toggleComponent">切换组件</button> -->
-    <component :is="currentComponent"></component>
-
+  <component :is="currentComponent"></component>
+  
   <Work />
-
-
   <Footer />
   <div>
     Your UUID is: {{ uuidStore.uuid }}
@@ -57,6 +56,4 @@ onMounted(() => {
 
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
