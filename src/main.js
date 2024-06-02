@@ -4,6 +4,17 @@ import {createPinia} from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import router from './router'
 
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue' //导入 ElementPlus 组件库中的所有图标
+
+const app = createApp(App)
+
+
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
+app.use(ElementPlus)
 // import '../src/assets/style/bootstrap5.scss'
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
@@ -31,4 +42,4 @@ router.beforeEach((to, from, next) => {
 // Bootstrap5 JS
 // import * as bootstrap from 'bootstrap'
 
-createApp(App).use(pinia).use(router).mount('#app')
+app.use(pinia).use(router).mount('#app')
