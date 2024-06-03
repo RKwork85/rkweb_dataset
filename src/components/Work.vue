@@ -199,7 +199,9 @@ const showDialog = (index) =>{
 					<thead class="thead-dark">
 						<tr>
 							<th class="col-1 align-self-center" scope="col"> 序号 </th>
-							<th class="col-11 " style="text-align:center" scope="col"> 广东众承人工智能客服数据集 </th>
+							<th class="col-9 " style="text-align:center" scope="col"> 广东众承人工智能客服数据集 </th>
+							<th class="col-2  pr-5" style="text-align:right"  scope="col"> 操作 </th>
+
 						</tr>
 					</thead>
 
@@ -207,13 +209,15 @@ const showDialog = (index) =>{
 					<tbody>
 						<tr v-for="(item, index) in dataStore.data.dataset" :key="index">
 							<td class="border-bottom border-dark  " scope="row">{{ index + 1 }}</td>
-							<td class="border-bottom border-dark d-flex justify-content-between "
+							<td class="border-bottom border-dark "
 								onmouseover="this.style.backgroundColor = '#d6ebd8'"
 								onmouseout="this.style.backgroundColor = '#fff'">{{ item[1] }}
-								<div class="pl-5 btn-group  ">
+							</td>
+							<td class="pl-5 pr-0 border-bottom border-dark " style="text-align:right">
+								
 									<button class="btn btn-outline-primary btn-sm " @click="showDialog(index)">编辑</button>
 									<button class="btn btn-outline-danger btn-sm" @click="deleteItem(index)">删除</button>
-								</div>
+								
 							</td>
 						</tr>
 
