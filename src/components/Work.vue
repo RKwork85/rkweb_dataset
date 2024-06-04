@@ -2,8 +2,11 @@
 import { type } from 'os'
 import { reactive, ref } from 'vue'
 import { useDataStore } from '../store/dataStore'
+import { useUuidStore } from '../store/uuidStore'
+
 import { ElNotification } from 'element-plus'
 const dataStore = useDataStore()
+const uuidStore = useUuidStore()
 
 interface Data {
 	instruction: string
@@ -41,8 +44,9 @@ const generateDataset = () => {
 	else {
 		let dataset = `{"instruction": "${data.instruction}", "input": "", "output": "${data.output}"}`
 
-		let datasetItem = [data.dataset.length, dataset]
+		let datasetItem = [uuidStore.login ? 0 : -1, dataset]
 		dataStore.data.dataset.unshift(datasetItem)
+		
 		console.log(dataStore.data.dataset)
 		// 清空输入框内容
 		data.instruction = ''

@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from 'uuid'
 export const useUuidStore = defineStore('uuidStore', {
   state: () => ({
     uuid: '',
-    flag: true       //默认是新用户
+    flag: true,       //默认是新用户
+    login: false
   }),
   // 不使用持久化插件实现
   // actions: {
