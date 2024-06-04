@@ -6,7 +6,9 @@ export const useUuidStore = defineStore('uuidStore', {
   state: () => ({
     uuid: '',
     flag: true,       //默认是新用户
-    login: false
+    logined: false,
+    showlogin:true
+
   }),
   // 不使用持久化插件实现
   // actions: {

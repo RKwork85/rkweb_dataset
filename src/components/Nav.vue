@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getCurrentInstance, ref } from 'vue';
+import { useUuidStore } from '../store/uuidStore.js'
 
 const {proxy} = getCurrentInstance()
 const strMultiple = 'multiple'
@@ -10,6 +11,23 @@ function toggleMultiple(){
 function toggleSingle(){
 	proxy.$emit('toggleSingle', strSingle)
 }
+const uuidStore = useUuidStore()
+
+let loginInfo = ref('加入我们')
+
+const setLogin = () =>{
+	uuidStore.logined = true           //展示当前登录的状态  
+	uuidStore.showlogin =false
+	console.log(uuidStore.logined)
+	loginInfo.value = '注销'
+}
+const setLogout = () =>{
+	uuidStore.showlogin = true
+	uuidStore.logined = false
+	console.log(uuidStore.logined)
+	loginInfo.value = '加入我们'
+}
+
 </script>
 
 <template>
@@ -61,7 +79,9 @@ function toggleSingle(){
 
 		<ul class="navbar-nav ml-auto d-flex align-items-center">
 			<!-- <li class="nav-item highlight"> -->
-			<a href="/login" class="btn btn-warning" >加入我们</a>
+			<a  class="btn btn-warning" id="loginInterface" v-show="uuidStore.showlogin" @click="setLogin">加入我们</a>
+			<a  class="btn btn-warning" id="loginInterface"  v-show="uuidStore.logined"   @click="setLogout">注销账号</a>
+			
 			<!-- </li> -->
 		</ul>
 	</div>

@@ -50,7 +50,6 @@ onMounted(() => {
   <div>
     Your UUID is: {{ uuidStore.uuid }}
     是否是新用户 is: {{ uuidStore.flag }}
-
   </div>
 
 
