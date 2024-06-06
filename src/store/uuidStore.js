@@ -7,7 +7,8 @@ export const useUuidStore = defineStore('uuidStore', {
     uuid: '',
     flag: true,       //默认是新用户
     logined: false,
-    showlogin:true
+    showlogin:true,
+    access_token: null,
 
   }),
   // 不使用持久化插件实现

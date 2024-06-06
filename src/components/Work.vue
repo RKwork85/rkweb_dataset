@@ -5,6 +5,9 @@ import { useDataStore } from '../store/dataStore'
 import { useUuidStore } from '../store/uuidStore'
 
 import { ElNotification } from 'element-plus'
+
+import { dataset_List } from '../api/modules/api.datasets'
+
 const dataStore = useDataStore()
 const uuidStore = useUuidStore()
 
@@ -37,24 +40,32 @@ const form = reactive({
 })
 
 const generateDataset = () => {
-	if (data.instruction == '' || data.output == '') {
+
+	if (data.instruction == '' || data.output == '') {    // 检测是否填入数据
 		console.log('未检测到数据')
 		$('#exampleModal').modal('show')
 	}
 	else {
-		let dataset = `{"instruction": "${data.instruction}", "input": "", "output": "${data.output}"}`
+		if (uuidStore.logined) {							// 填入了检查是否登录 如果是 获取登录的用户的数据     不应该在这里获取所用数据， 应该是发送请求添加数据
+			dataset_List().then(res => {
+				console.log(res.data.logged_in_as)				
+			}).catch(err => {
+				console.log(err)
+			})
+		} else {											// 如果未登录
+			let dataset = `{"instruction": "${data.instruction}", "input": "", "output": "${data.output}"}`
+			let datasetItem = [uuidStore.login ? 0 : -1, dataset]
+			dataStore.data.dataset.unshift(datasetItem)
 
-		let datasetItem = [uuidStore.login ? 0 : -1, dataset]
-		dataStore.data.dataset.unshift(datasetItem)
-		
-		console.log(dataStore.data.dataset)
+			console.log(dataStore.data.dataset)
+		}
 		// 清空输入框内容
 		data.instruction = ''
 		data.output = ''
 	}
 }
 
-const deleteItem = (index) => {
+const deleteItem = (index) => {					//提示框代码可优化
 	dataStore.data.dataset.splice(index, 1)
 
 	console.log('Deleted item at index:', index)
@@ -77,8 +88,8 @@ const upgradeInfo = (id) => {
 	})
 }
 const editForm = () => {
-    // 在这里,您可以访问 this.form 中的表单数据
-	
+	// 在这里,您可以访问 this.form 中的表单数据
+
 	let dataset = `{"instruction": "${form.instruction}", "input": "", "output": "${form.output}"}`
 	let datasetItem = [data.dataset.length, dataset]
 
@@ -87,18 +98,26 @@ const editForm = () => {
 	// 清空输入框内容
 	form.instruction = ''
 	form.output = ''
-	upgradeInfo(form.item + 1 )
+	upgradeInfo(form.item + 1)
 
 
-    // 您还可以调用一个函数来将数据保存到服务器,更新用户界面等
-    dialogFormVisible.value = false; // 关闭对话框
-  }
+	// 您还可以调用一个函数来将数据保存到服务器,更新用户界面等
+	dialogFormVisible.value = false; // 关闭对话框
+}
 
-const showDialog = (index) =>{
+const showDialog = (index) => {
 	form.item = index
 	dialogFormVisible.value = true;
 	console.log(form.item)
 }
+
+// 接口相关
+
+
+
+
+
+
 
 </script>
 <template>
@@ -106,10 +125,10 @@ const showDialog = (index) =>{
 
 	<div>
 		<!-- 修改框 -->
-		<el-dialog v-model="dialogFormVisible" title="修改数据" width="800"  align-center>
+		<el-dialog v-model="dialogFormVisible" title="修改数据" width="800" align-center>
 			<el-form :model="form">
-				<el-form-item label="Human" :label-width="formLabelWidth"  >
-					<el-input v-model="form.instruction" autocomplete="off"  />
+				<el-form-item label="Human" :label-width="formLabelWidth">
+					<el-input v-model="form.instruction" autocomplete="off" />
 				</el-form-item>
 				<el-form-item label="Assistant" :label-width="formLabelWidth">
 					<el-input v-model="form.output" autocomplete="off" />
@@ -204,24 +223,25 @@ const showDialog = (index) =>{
 						<tr>
 							<th class="col-1 align-self-center" scope="col"> 序号 </th>
 							<th class="col-9 " style="text-align:center" scope="col"> 广东众承人工智能客服数据集 </th>
-							<th class="col-2  pr-5" style="text-align:right"  scope="col"> 操作 </th>
+							<th class="col-2  pr-5" style="text-align:right" scope="col"> 操作 </th>
 
 						</tr>
 					</thead>
 
 					<!-- 需要把这个静态的表格变成动态的 -->
 					<tbody>
+						<!-- <tr v-for="(item, index) in dataStore.data.dataset" :key="index"> -->
 						<tr v-for="(item, index) in dataStore.data.dataset" :key="index">
+
 							<td class="border-bottom border-dark  " scope="row">{{ index + 1 }}</td>
-							<td class="border-bottom border-dark "
-								onmouseover="this.style.backgroundColor = '#d6ebd8'"
-								onmouseout="this.style.backgroundColor = '#fff'">{{ item[1] }}
+							<td class="border-bottom border-dark " onmouseover="this.style.backgroundColor = '#d6ebd8'"
+								onmouseout="this.style.backgroundColor = '#fff'">{{ item }}
 							</td>
 							<td class="pl-5 pr-0 border-bottom border-dark " style="text-align:right">
-								
-									<button class="btn btn-outline-primary btn-sm " @click="showDialog(index)">编辑</button>
-									<button class="btn btn-outline-danger btn-sm" @click="deleteItem(index)">删除</button>
-								
+
+								<button class="btn btn-outline-primary btn-sm " @click="showDialog(index)">编辑</button>
+								<button class="btn btn-outline-danger btn-sm" @click="deleteItem(index)">删除</button>
+
 							</td>
 						</tr>
 
