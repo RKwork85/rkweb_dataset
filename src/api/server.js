@@ -70,7 +70,7 @@ class AxiosService {
         });
     }
 
-    // DELETE 请求
+    // DELETE 请求      两种方式，可以试下
     delete(url, params = null) {
         return axiosDataset.request({
             method: 'delete',

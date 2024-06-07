@@ -6,7 +6,7 @@ import { useUuidStore } from '../store/uuidStore'
 
 import { ElNotification } from 'element-plus'
 
-import { dataset_List } from '../api/modules/api.datasets'
+import { dataset_Create, dataset_List,dataset_Delete } from '../api/modules/api.datasets'
 
 const dataStore = useDataStore()
 const uuidStore = useUuidStore()
@@ -16,7 +16,7 @@ interface Data {
 	output: string
 	info: boolean
 	infotarget: string
-	dataset: [number, string][]
+	dataset: [number, object][]
 	hover: boolean
 }
 
@@ -25,7 +25,7 @@ const data = reactive<Data>({
 	output: '',
 	info: false,
 	infotarget: '',
-	dataset: [[1, '{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}'], [3, '{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}'], [10, '{"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}']],
+	dataset: [[1, {"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}], [3, {"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}]],
 	hover: true,
 
 })
@@ -45,15 +45,23 @@ const generateDataset = () => {
 		console.log('未检测到数据')
 		$('#exampleModal').modal('show')
 	}
-	else {
-		if (uuidStore.logined) {							// 填入了检查是否登录 如果是 获取登录的用户的数据     不应该在这里获取所用数据， 应该是发送请求添加数据
-			dataset_List().then(res => {
-				console.log(res.data.logged_in_as)				
+	else {															
+		if (uuidStore.logined) {								// 填入了检查是否登录 如果是 获取登录的用户的数据     不应该在这里获取所用数据， 应该是发送请求添加数据
+				 
+			let dataset= {											//构造数据
+				"instruction": data.instruction,
+				"output": data.output
+			}
+			dataset_Create(dataset).then(res => {
+				console.log(res.data.dataset)		
+				dataStore.data.dataset.unshift(res.data.dataset)	
+				dbAddInfo(res.data.dataset[0])
 			}).catch(err => {
 				console.log(err)
 			})
-		} else {											// 如果未登录
-			let dataset = `{"instruction": "${data.instruction}", "input": "", "output": "${data.output}"}`
+		} else {			
+			let sign = '"'								// 如果未登录
+			let dataset = {"instruction": sign + `${data.instruction}` + sign, "input": "", "output": `"${data.output}"`}
 			let datasetItem = [uuidStore.login ? 0 : -1, dataset]
 			dataStore.data.dataset.unshift(datasetItem)
 
@@ -65,22 +73,52 @@ const generateDataset = () => {
 	}
 }
 
-const deleteItem = (index) => {					//提示框代码可优化
-	dataStore.data.dataset.splice(index, 1)
+const dbAddInfo = (id) => {
+	ElNotification.success({
+		title: '添加数据成功',
+		message: `数据已成功添加到数据库,id为${id}`,
+		offset: 200,
+	})
+}
 
-	console.log('Deleted item at index:', index)
-	delInfo(index + 1)
+
+const deleteItem = (index,id) => {					//提示框代码可优化
+
+	dataStore.data.dataset.splice(index, 1)
+	console.log('deleteItem: Deleted item at index:', index)
+	dataset_Delete(id).then( res =>{
+
+	console.log(res.data.msg)
+	dbDeleteInfo(id)
+
+	})
+}
+const deleteindex = (index) => {					//提示框代码可优化
+
+dataStore.data.dataset.splice(index, 1)
+
+console.log('deleteindex:Deleted item at index:', index)
+delInfo(index + 1)
+}
+
+
+const dbDeleteInfo = (id) => {
+	ElNotification.success({
+		title: '删除成功',
+		message: `数据库中id为 ${id} 的数据在已删除`,
+		offset: 200,
+	})
 }
 
 const delInfo = (id) => {
 	ElNotification.success({
 		title: '删除成功',
-		message: `您选中 id为 ${id}的数据集已删除`,
+		message: `您选中 id为 ${id} 的数据集已删除`,
 		offset: 200,
 	})
 }
 
-const upgradeInfo = (id) => {
+const upgradeInfo = (id) => {               // bug 未传入数据
 	ElNotification.success({
 		title: '更新成功',
 		message: `您编辑 id为 ${id}的数据集修改成功`,
@@ -235,12 +273,25 @@ const showDialog = (index) => {
 
 							<td class="border-bottom border-dark  " scope="row">{{ index + 1 }}</td>
 							<td class="border-bottom border-dark " onmouseover="this.style.backgroundColor = '#d6ebd8'"
-								onmouseout="this.style.backgroundColor = '#fff'">{{ item }}
+								onmouseout="this.style.backgroundColor = '#fff'">
+								<span style="color: #801dae;">{</span>
+								"<span style="color: #4b5cc4;">instruction</span>"
+								: 
+								"<span style="color: #2edfa3;">{{ item[1].instruction.replace(/"/g, '')}}</span>",
+
+								"<span style="color: #4b5cc4;">input</span>"
+								: "",
+								<span style="color: #4b5cc4;">output</span>
+								:
+								"<span style="color: #2edfa3;">{{ item[1].output.replace(/"/g, '')}}</span>"
+
+								<span style="color: #801dae;">}</span>
+
 							</td>
 							<td class="pl-5 pr-0 border-bottom border-dark " style="text-align:right">
 
 								<button class="btn btn-outline-primary btn-sm " @click="showDialog(index)">编辑</button>
-								<button class="btn btn-outline-danger btn-sm" @click="deleteItem(index)">删除</button>
+								<button class="btn btn-outline-danger btn-sm" @click="uuidStore.logined ? deleteItem( index, item[0]): deleteindex(index)">删除</button>
 
 							</td>
 						</tr>

@@ -11,8 +11,8 @@ export const dataset_Update = (data) => {
 export const dataset_Synchronize = (data) => {
     return service.post('/v1/work/datasets/synchronize', data)
 }
-export const dataset_Delete = (data) => {
-    return service.post('/v1/work/datasets/delete', data)
+export const dataset_Delete = (id, data=null) => {
+    return service.delete(`/v1/work/datasets/delete/${id}`, data)
 }
 export const dataset_UploadMd = (data) => {
     return service.post('/v1/work/datasets/uploadMd', data)

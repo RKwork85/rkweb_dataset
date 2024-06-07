@@ -55,8 +55,8 @@ const setLogin = () => {
 					// console.log('打印出存储在浏览器中原有的数据',dataset)
 
 					let data = {
-						'instruction': `${JSON.parse(dataset[1]).instruction}`,
-						'output': `${JSON.parse(dataset[1]).output}`,
+						'instruction': dataset[1].instruction,
+						'output': dataset[1].output
 					}
 					// console.log(data)
 					allLocalData.push(data)	
