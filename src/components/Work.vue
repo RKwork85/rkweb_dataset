@@ -5,8 +5,9 @@ import { useDataStore } from '../store/dataStore'
 import { useUuidStore } from '../store/uuidStore'
 
 import { ElNotification } from 'element-plus'
+import { dsNotification } from '../libs/util.toast'
 
-import { dataset_Create, dataset_List, dataset_Delete,dataset_Update } from '../api/modules/api.datasets'
+import { dataset_Create, dataset_List, dataset_Delete, dataset_Update } from '../api/modules/api.datasets'
 
 const dataStore = useDataStore()
 const uuidStore = useUuidStore()
@@ -56,7 +57,8 @@ const generateDataset = () => {
 			dataset_Create(dataset).then(res => {
 				console.log(res.data.dataset)
 				dataStore.data.dataset.unshift(res.data.dataset)
-				dbAddInfo(res.data.dataset[0])
+				// dbAddInfo(res.data.dataset[0])
+				dsNotification.success('数据库操作：添加数据', '数据成功添加到数据库！')
 			}).catch(err => {
 				console.log(err)
 			})
@@ -64,6 +66,7 @@ const generateDataset = () => {
 			let dataset = { "instruction": `"${data.instruction}"`, "input": "", "output": `"${data.output}"` }
 			let datasetItem = [uuidStore.login ? 0 : -1, dataset]
 			dataStore.data.dataset.unshift(datasetItem)
+			dsNotification.success('添加数据', '数据添加成功')
 
 			console.log(dataStore.data.dataset)
 		}
@@ -73,88 +76,30 @@ const generateDataset = () => {
 	}
 }
 
-const dbAddInfo = (id) => {
-	ElNotification.success({
-		title: '添加数据成功',
-		message: `数据已成功添加到数据库,id为${id}`,
-		offset: 200,
-	})
-}
-const dbUpdateInfo = (id) => {
-	ElNotification.success({
-		title: '更新数据成功',
-		message: `数据已成功更新到数据库,id为${id}`,
-		offset: 200,
-	})
-}
-
-
-const deleteItem = (index, id) => {					//提示框代码可优化
-
-	dataStore.data.dataset.splice(index, 1)
-	console.log('deleteItem: Deleted item at index:', index)
-	dataset_Delete(id).then(res => {
-
-		console.log(res.data.msg)
-		dbDeleteInfo(id)
-
-	})
-}
-const deleteindex = (index) => {					//提示框代码可优化
-
-	dataStore.data.dataset.splice(index, 1)
-
-	console.log('deleteindex:Deleted item at index:', index)
-	delInfo(index + 1)
-}
-
-
-const dbDeleteInfo = (id) => {
-	ElNotification.success({
-		title: '删除成功',
-		message: `数据库中id为 ${id} 的数据在已删除`,
-		offset: 200,
-	})
-}
-
-const delInfo = (id) => {
-	ElNotification.success({
-		title: '删除成功',
-		message: `您选中 id为 ${id} 的数据集已删除`,
-		offset: 200,
-	})
-}
-
-const upgradeInfo = (id) => {               // bug 未传入数据
-	ElNotification.success({
-		title: '更新成功',
-		message: `您编辑 id为 ${id}的数据集修改成功`,
-		offset: 200,
-	})
-}
 const editForm = () => {
 	// 在这里,您可以访问 this.form 中的表单数据
 	if (uuidStore.logined) {
 		let dataset = {											//构造数据
-				"instruction": form.instruction,
-				"output": form.output
-			}
-			let id = form.id
-			console.log("正在编辑的数据集id:", id)
-			dataset_Update(id, dataset).then(res => {
-				console.log(res.data.msg)
-				console.log(res.data.newDataset)
+			"instruction": form.instruction,
+			"output": form.output
+		}
+		let id = form.id
+		console.log("正在编辑的数据集id:", id)
+		dataset_Update(id, dataset).then(res => {
+			console.log(res.data.msg)
+			console.log(res.data.newDataset)
 
-				dataStore.data.dataset[form.item] = res.data.newDataset
+			dataStore.data.dataset[form.item] = res.data.newDataset
 
-				dbUpdateInfo(res.data.newDataset[0])
+			dsNotification.success('数据库操作：修改数据', `数据库中id为${res.data.newDataset[0]}的数据修改成功！`)
 
-				form.instruction = ''
-				form.output = ''
-				
-			}).catch(err => {
-				console.log(err)
-			})
+
+			form.instruction = ''
+			form.output = ''
+
+		}).catch(err => {
+			console.log(err)
+		})
 
 	} else {
 
@@ -166,27 +111,43 @@ const editForm = () => {
 		// 清空输入框内容
 		form.instruction = ''
 		form.output = ''
-		upgradeInfo(form.item + 1)
+
+		dsNotification.success('修改数据', `id为 ${form.item + 1} 的数据已修改`)
 	}
 
 	// 您还可以调用一个函数来将数据保存到服务器,更新用户界面等
 	dialogFormVisible.value = false; // 关闭对话框
 }
 
+
+const dbdelete = (index, id) => {					//提示框代码可优化
+
+	dataStore.data.dataset.splice(index, 1)
+	console.log('deleteItem: Deleted item at index:', index)
+	dataset_Delete(id).then(res => {
+
+		console.log(res.data.msg)
+
+		dsNotification.success('数据库操作：删除数据', `数据库中id为${id}的数据删除成功！`)
+
+	})
+}
+const deleteindex = (index) => {					//提示框代码可优化
+
+	dataStore.data.dataset.splice(index, 1)
+
+	console.log('deleteindex:Deleted item at index:', index)
+
+	dsNotification.success('删除数据', `id为 ${index + 1} 的数据已删除`)
+
+}
+
 const showDialog = (index, id) => {
 	form.item = index,
-	form.id = id
+		form.id = id
 	dialogFormVisible.value = true;
 	console.log(form.item)
 }
-
-// 接口相关
-
-
-
-
-
-
 
 </script>
 <template>
@@ -321,9 +282,10 @@ const showDialog = (index, id) => {
 							</td>
 							<td class="pl-5 pr-0 border-bottom border-dark " style="text-align:right">
 
-								<button class="btn btn-outline-primary btn-sm " @click="showDialog(index, item[0])">编辑</button>
+								<button class="btn btn-outline-primary btn-sm "
+									@click="showDialog(index, item[0])">编辑</button>
 								<button class="btn btn-outline-danger btn-sm"
-									@click="uuidStore.logined ? deleteItem(index, item[0]) : deleteindex(index)">删除</button>
+									@click="uuidStore.logined ? dbdelete(index, item[0]) : deleteindex(index)">删除</button>
 
 							</td>
 						</tr>

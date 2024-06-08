@@ -4,6 +4,7 @@ import { useUuidStore } from '../store/uuidStore.js'
 import { useDataStore } from '../store/dataStore'
 
 import { ElNotification } from 'element-plus'
+import { dsNotification } from '../libs/util.toast'
 
 import { authLogin } from '../api/modules/api.auth'
 import { dataset_List } from '../api/modules/api.datasets'
@@ -45,9 +46,9 @@ const setLogin = () => {
 
 			// 	console.log('从后端请求来用户的所有数据',res.data.allDataset)
 			// })
-																	// console.log('你好',useDataStore().data.dataset.length)       // 检查localStore是否为空
+			// console.log('你好',useDataStore().data.dataset.length)       // 检查localStore是否为空
 			if (dataStore.data.dataset.length != 0) {      			// 在登录之前浏览器中存储有数据
-				
+
 				let allLocalData = []
 
 				// console.log(dataStore.data.dataset)
@@ -59,42 +60,32 @@ const setLogin = () => {
 						'output': dataset[1].output
 					}
 					// console.log(data)
-					allLocalData.unshift(data)	
-			}
-			console.log(allLocalData)								//是逆序的原因是，用户在添加数据时，添加到了数组的前面；所以在循环的时候，是逆序的
-			
-			let data ={
-				'datasets': allLocalData
-			}
-			dataset_Synchronize(data).then( res =>{
-				console.log('从前端同步到后端后，用户数据库中的所有数据',res.data.allDataset)
-				dataStore.data.dataset = [...res.data.allDataset].reverse()
+					allLocalData.unshift(data)
+				}
+				console.log(allLocalData)								//是逆序的原因是，用户在添加数据时，添加到了数组的前面；所以在循环的时候，是逆序的
 
-				console.log(dataStore.data.dataset)
-				connectInfo()
+				let data = {
+					'datasets': allLocalData
+				}
+				dataset_Synchronize(data).then(res => {
+					console.log('从前端同步到后端后，用户数据库中的所有数据', res.data.allDataset)
+					dataStore.data.dataset = [...res.data.allDataset].reverse()
 
-				
+					console.log(dataStore.data.dataset)
+					dsNotification.success("登录成功", "您的本地的数据已同步到数据库")
 
-			})
+				})
 
 			}
+			else {
 
-		else{
-
-		}
+			}
 
 		}
 	})
 
 	console.log(uuidStore.logined)		// 显示登录状态 改变显示设置注销
 	loginInfo.value = '注销'
-}
-const connectInfo = () => {
-	ElNotification.success({
-		title: '连接数据库成功，',
-		message: `成功同步数据库用户数据！`,
-		offset: 200,
-	})
 }
 const setLogout = () => {
 	uuidStore.showlogin = true
