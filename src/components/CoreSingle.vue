@@ -21,7 +21,6 @@
 					</p>
 				</div>
 
-				<!-- <div style="background-image: url(../static/img/demo/1.jpg); height: 150px;    background-size: cover;    background-repeat: no-repeat;"></div>                --> 
 			</div>
 			<div class="card border-0 mb-0 box-shadow h-xl-300 pt-1 pb-1">              
 				<div class="card-body px-0 pb-0 pt-0 d-flex flex-column align-items-start">

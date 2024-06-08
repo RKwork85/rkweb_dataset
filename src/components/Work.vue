@@ -83,7 +83,7 @@ const dbAddInfo = (id) => {
 const dbUpdateInfo = (id) => {
 	ElNotification.success({
 		title: '更新数据成功',
-		message: `数据已成功添加到数据库,id为${id}`,
+		message: `数据已成功更新到数据库,id为${id}`,
 		offset: 200,
 	})
 }
@@ -145,9 +145,13 @@ const editForm = () => {
 				console.log(res.data.msg)
 				console.log(res.data.newDataset)
 
-				dataStore.data.dataset.unshift(res.data.newDataset)
+				dataStore.data.dataset[form.item] = res.data.newDataset
 
 				dbUpdateInfo(res.data.newDataset[0])
+
+				form.instruction = ''
+				form.output = ''
+				
 			}).catch(err => {
 				console.log(err)
 			})

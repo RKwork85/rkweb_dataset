@@ -59,7 +59,7 @@ const setLogin = () => {
 						'output': dataset[1].output
 					}
 					// console.log(data)
-					allLocalData.push(data)	
+					allLocalData.unshift(data)	
 			}
 			console.log(allLocalData)								//是逆序的原因是，用户在添加数据时，添加到了数组的前面；所以在循环的时候，是逆序的
 			
