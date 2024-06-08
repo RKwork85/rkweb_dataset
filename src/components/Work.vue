@@ -6,7 +6,7 @@ import { useUuidStore } from '../store/uuidStore'
 
 import { ElNotification } from 'element-plus'
 
-import { dataset_Create, dataset_List,dataset_Delete } from '../api/modules/api.datasets'
+import { dataset_Create, dataset_List, dataset_Delete,dataset_Update } from '../api/modules/api.datasets'
 
 const dataStore = useDataStore()
 const uuidStore = useUuidStore()
@@ -25,7 +25,7 @@ const data = reactive<Data>({
 	output: '',
 	info: false,
 	infotarget: '',
-	dataset: [[1, {"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}], [3, {"instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？"}]],
+	dataset: [[1, { "instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？" }], [3, { "instruction": "你好", "input": "", "output": "您好，我是 木子AI，一个由 广东众承人工智能有限公司 打造的人工智能助手，请问有什么可以帮助您的吗？" }]],
 	hover: true,
 
 })
@@ -35,6 +35,7 @@ const formLabelWidth = '140px'
 
 const form = reactive({
 	item: -1,
+	id: null,
 	instruction: '',
 	output: '',
 })
@@ -45,23 +46,22 @@ const generateDataset = () => {
 		console.log('未检测到数据')
 		$('#exampleModal').modal('show')
 	}
-	else {															
+	else {
 		if (uuidStore.logined) {								// 填入了检查是否登录 如果是 获取登录的用户的数据     不应该在这里获取所用数据， 应该是发送请求添加数据
-				 
-			let dataset= {											//构造数据
+
+			let dataset = {											//构造数据
 				"instruction": data.instruction,
 				"output": data.output
 			}
 			dataset_Create(dataset).then(res => {
-				console.log(res.data.dataset)		
-				dataStore.data.dataset.unshift(res.data.dataset)	
+				console.log(res.data.dataset)
+				dataStore.data.dataset.unshift(res.data.dataset)
 				dbAddInfo(res.data.dataset[0])
 			}).catch(err => {
 				console.log(err)
 			})
-		} else {			
-			let sign = '"'								// 如果未登录
-			let dataset = {"instruction": sign + `${data.instruction}` + sign, "input": "", "output": `"${data.output}"`}
+		} else {
+			let dataset = { "instruction": `"${data.instruction}"`, "input": "", "output": `"${data.output}"` }
 			let datasetItem = [uuidStore.login ? 0 : -1, dataset]
 			dataStore.data.dataset.unshift(datasetItem)
 
@@ -80,25 +80,32 @@ const dbAddInfo = (id) => {
 		offset: 200,
 	})
 }
+const dbUpdateInfo = (id) => {
+	ElNotification.success({
+		title: '更新数据成功',
+		message: `数据已成功添加到数据库,id为${id}`,
+		offset: 200,
+	})
+}
 
 
-const deleteItem = (index,id) => {					//提示框代码可优化
+const deleteItem = (index, id) => {					//提示框代码可优化
 
 	dataStore.data.dataset.splice(index, 1)
 	console.log('deleteItem: Deleted item at index:', index)
-	dataset_Delete(id).then( res =>{
+	dataset_Delete(id).then(res => {
 
-	console.log(res.data.msg)
-	dbDeleteInfo(id)
+		console.log(res.data.msg)
+		dbDeleteInfo(id)
 
 	})
 }
 const deleteindex = (index) => {					//提示框代码可优化
 
-dataStore.data.dataset.splice(index, 1)
+	dataStore.data.dataset.splice(index, 1)
 
-console.log('deleteindex:Deleted item at index:', index)
-delInfo(index + 1)
+	console.log('deleteindex:Deleted item at index:', index)
+	delInfo(index + 1)
 }
 
 
@@ -127,24 +134,44 @@ const upgradeInfo = (id) => {               // bug 未传入数据
 }
 const editForm = () => {
 	// 在这里,您可以访问 this.form 中的表单数据
+	if (uuidStore.logined) {
+		let dataset = {											//构造数据
+				"instruction": form.instruction,
+				"output": form.output
+			}
+			let id = form.id
+			console.log("正在编辑的数据集id:", id)
+			dataset_Update(id, dataset).then(res => {
+				console.log(res.data.msg)
+				console.log(res.data.newDataset)
 
-	let dataset = `{"instruction": "${form.instruction}", "input": "", "output": "${form.output}"}`
-	let datasetItem = [data.dataset.length, dataset]
+				dataStore.data.dataset.unshift(res.data.newDataset)
 
-	dataStore.data.dataset[form.item] = datasetItem
-	console.log(dataStore.data.dataset[form.item])
-	// 清空输入框内容
-	form.instruction = ''
-	form.output = ''
-	upgradeInfo(form.item + 1)
+				dbUpdateInfo(res.data.newDataset[0])
+			}).catch(err => {
+				console.log(err)
+			})
 
+	} else {
+
+		let dataset = { "instruction": `"${form.instruction}"`, "input": "", "output": `"${form.output}"` }
+		let datasetItem = [data.dataset.length, dataset]
+
+		dataStore.data.dataset[form.item] = datasetItem
+		console.log(dataStore.data.dataset[form.item])
+		// 清空输入框内容
+		form.instruction = ''
+		form.output = ''
+		upgradeInfo(form.item + 1)
+	}
 
 	// 您还可以调用一个函数来将数据保存到服务器,更新用户界面等
 	dialogFormVisible.value = false; // 关闭对话框
 }
 
-const showDialog = (index) => {
-	form.item = index
+const showDialog = (index, id) => {
+	form.item = index,
+	form.id = id
 	dialogFormVisible.value = true;
 	console.log(form.item)
 }
@@ -276,22 +303,23 @@ const showDialog = (index) => {
 								onmouseout="this.style.backgroundColor = '#fff'">
 								<span style="color: #801dae;">{</span>
 								"<span style="color: #4b5cc4;">instruction</span>"
-								: 
-								"<span style="color: #2edfa3;">{{ item[1].instruction.replace(/"/g, '')}}</span>",
+								:
+								"<span style="color: #2edfa3;">{{ item[1].instruction.replace(/"/g, '') }}</span>",
 
 								"<span style="color: #4b5cc4;">input</span>"
 								: "",
 								<span style="color: #4b5cc4;">output</span>
 								:
-								"<span style="color: #2edfa3;">{{ item[1].output.replace(/"/g, '')}}</span>"
+								"<span style="color: #2edfa3;">{{ item[1].output.replace(/"/g, '') }}</span>"
 
 								<span style="color: #801dae;">}</span>
 
 							</td>
 							<td class="pl-5 pr-0 border-bottom border-dark " style="text-align:right">
 
-								<button class="btn btn-outline-primary btn-sm " @click="showDialog(index)">编辑</button>
-								<button class="btn btn-outline-danger btn-sm" @click="uuidStore.logined ? deleteItem( index, item[0]): deleteindex(index)">删除</button>
+								<button class="btn btn-outline-primary btn-sm " @click="showDialog(index, item[0])">编辑</button>
+								<button class="btn btn-outline-danger btn-sm"
+									@click="uuidStore.logined ? deleteItem(index, item[0]) : deleteindex(index)">删除</button>
 
 							</td>
 						</tr>

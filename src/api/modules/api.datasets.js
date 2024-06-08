@@ -5,8 +5,8 @@ export const dataset_List = () => {
 export const dataset_Create = (data) => {
     return service.post('/v1/work/datasets/create', data)
 }
-export const dataset_Update = (data) => {
-    return service.post('/v1/work/datasets/update', data)
+export const dataset_Update = (id,data) => {
+    return service.put(`/v1/work/datasets/update/${id}`, data)
 }
 export const dataset_Synchronize = (data) => {
     return service.post('/v1/work/datasets/synchronize', data)
