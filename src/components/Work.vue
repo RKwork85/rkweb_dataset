@@ -63,8 +63,9 @@ const generateDataset = () => {
 				console.log(err)
 			})
 		} else {
-			let dataset = { "instruction": `"${data.instruction}"`, "input": "", "output": `"${data.output}"` }
+			let dataset = { "instruction": `${data.instruction}`, "input": "", "output": `${data.output}` }
 			let datasetItem = [uuidStore.login ? 0 : -1, dataset]
+
 			dataStore.data.dataset.unshift(datasetItem)
 			dsNotification.success('添加数据', '数据添加成功')
 
