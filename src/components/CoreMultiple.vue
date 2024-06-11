@@ -4,7 +4,7 @@
 
 <template>
 
-<div class="container pt-4 pb-4">
+<div class="container pt-4 pb-4 animate__animated animate__fadeInDown">
 	<div class="row">
 		<div class="col-lg-6">
 			<div class="card border-0 mb-4 box-shadow h-xl-300">              

@@ -10,9 +10,8 @@ import { authLogin } from '../api/modules/api.auth'
 import { dataset_List } from '../api/modules/api.datasets'
 import { dataset_Synchronize } from '../api/modules/api.datasets'
 
-
-
 const { proxy } = getCurrentInstance()
+
 const strMultiple = 'multiple'
 const strSingle = 'single'
 function toggleMultiple() {
