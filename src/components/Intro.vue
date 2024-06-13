@@ -4,7 +4,6 @@ import 'animate.css';
 </script>
 
 <template>
-    
 <div class="container mb-0 mt-0">
 	<div class="jumbotron jumbotron-fluid mb-1 pt-0 pb-0 bg-lightblue position-relative">
 		<!-- <div class="pl-4 pr-0 h-100 tofront"> -->

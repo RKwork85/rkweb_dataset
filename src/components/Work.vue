@@ -4,6 +4,8 @@ import { reactive, ref } from 'vue'
 import { useDataStore } from '../store/dataStore'
 import { useUuidStore } from '../store/uuidStore'
 
+import {fileDownload} from  '../api/modules/api.file'
+
 import { ElNotification } from 'element-plus'
 import { dsNotification } from '../libs/util.toast'
 
@@ -150,6 +152,37 @@ const showDialog = (index, id) => {
 	console.log(form.item)
 }
 
+
+const downloadFile = (filename) => {                        //入口
+      try{
+        let filename = 'dataset.jsonl'
+        
+        fileDownload(filename).then( res =>{
+        console.log(res)
+        const url = window.URL.createObjectURL(new Blob([res.data]))    //请求  耗时操作
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', filename)
+
+      // 添加动画效果
+
+
+
+      // 延时2秒后执行下载操作
+      setTimeout(() => {
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        
+      }, 2000);
+    });                        
+      
+      } catch (error) {
+        console.error('Error downloading file:', error)
+      }
+}   
+
 </script>
 <template>
 
@@ -220,6 +253,7 @@ const showDialog = (index, id) => {
 						<div class="d-flex justify-content-center">
 							<button type="submit" class="btn btn-secondary btn-default d-block"
 								@click="generateDataset">确认生成</button>
+
 						</div>
 						<form class="mb-3">
 							<div class="form-group">
@@ -235,6 +269,7 @@ const showDialog = (index, id) => {
 							</div>
 
 						</form>
+						<button type="submit" class="btn btn-primary btn-default d-block " @click="downloadFile('example.pdf')">导出数据集文件</button>
 					</div>
 
 				</div>
@@ -274,7 +309,7 @@ const showDialog = (index, id) => {
 
 								"<span style="color: #4b5cc4;">input</span>"
 								: "",
-								<span style="color: #4b5cc4;">output</span>
+								"<span style="color: #4b5cc4;">output</span>"
 								:
 								"<span style="color: #2edfa3;">{{ item[1].output.replace(/"/g, '') }}</span>"
 
