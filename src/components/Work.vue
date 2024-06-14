@@ -4,7 +4,7 @@ import { reactive, ref } from 'vue'
 import { useDataStore } from '../store/dataStore'
 import { useUuidStore } from '../store/uuidStore'
 
-import {fileDownload} from  '../api/modules/api.file'
+import { fileDownload } from '../api/modules/api.file'
 
 import { ElNotification } from 'element-plus'
 import { dsNotification } from '../libs/util.toast'
@@ -14,6 +14,7 @@ import { dataset_Create, dataset_List, dataset_Delete, dataset_Update } from '..
 const dataStore = useDataStore()
 const uuidStore = useUuidStore()
 
+const centerDialogVisible = ref(false)
 interface Data {
 	instruction: string
 	output: string
@@ -154,40 +155,53 @@ const showDialog = (index, id) => {
 
 
 const downloadFile = (filename) => {                        //入口
-      try{
-        let filename = 'dataset.jsonl'
-        
-        fileDownload(filename).then( res =>{
-        console.log(res)
-        const url = window.URL.createObjectURL(new Blob([res.data]))    //请求  耗时操作
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', filename)
+	try {
+		let filename = 'dataset.jsonl'
 
-      // 添加动画效果
+		fileDownload(filename).then(res => {
+			console.log(res)
+			const url = window.URL.createObjectURL(new Blob([res.data]))    //请求  耗时操作
+			const link = document.createElement('a')
+			link.href = url
+			link.setAttribute('download', filename)
+
+			// 添加动画效果
 
 
 
-      // 延时2秒后执行下载操作
-      setTimeout(() => {
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+			// 延时2秒后执行下载操作
+			setTimeout(() => {
+				document.body.appendChild(link);
+				link.click();
+				link.remove();
+				centerDialogVisible.value = true
 
-        
-      }, 2000);
-    });                        
-      
-      } catch (error) {
-        console.error('Error downloading file:', error)
-      }
-}   
+			}, 2000);
+
+		});
+
+	} catch (error) {
+		console.error('Error downloading file:', error)
+	}
+}
 
 </script>
 <template>
 
 
 	<div>
+		<!-- 导出数据集提示框 -->
+		<el-dialog v-model="centerDialogVisible" title="导出成功" width="500" align-center>
+			<span>您制作的数据集导出成功！</span>
+			<template #footer>
+				<div class="dialog-footer">
+					
+					<el-button type="primary" @click="centerDialogVisible = false">
+						确定
+					</el-button>
+				</div>
+			</template>
+		</el-dialog>
 		<!-- 修改框 -->
 		<el-dialog v-model="dialogFormVisible" title="修改数据" width="800" align-center>
 			<el-form :model="form">
@@ -269,7 +283,9 @@ const downloadFile = (filename) => {                        //入口
 							</div>
 
 						</form>
-						<button type="submit" class="btn btn-primary btn-default d-block " @click="downloadFile('example.pdf')">导出数据集文件</button>
+						<button class="btn btn-primary btn-default d-block " @click="downloadFile('example.pdf')"
+							v-if="uuidStore.logined">导出数据集文件</button>
+						<!-- <button v-show="false">点击我</button> -->
 					</div>
 
 				</div>
